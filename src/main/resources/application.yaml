@@ -1,0 +1,31 @@
+spring:
+    application:
+      name: security-oriented
+    datasource:
+        url: jdbc:h2:mem:testdb;DB_CLOSE_DELAY=-1
+        driverClassName: org.h2.Driver
+        username: sa
+        password:
+    jpa:
+        hibernate:
+            ddl-auto: update
+
+    cloud:
+        vault:
+            uri: http://vault:8200
+            authentication: TOKEN
+            token: root
+            kv:
+                enabled: true
+                backend: secret
+                default-context: application
+
+server:
+  port: 8443
+  ssl:
+    enabled: false
+  
+app:
+  jwt:
+    secret: ${jwt.secret}
+    expiration-ms: 3600000
