@@ -1,10 +1,10 @@
-package com.security_oriented;
+package com.security.oriented;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class SecurityOrientedApplicationTests {
+class OrientedApplicationTests {
 
 	@Test
 	void contextLoads() {
