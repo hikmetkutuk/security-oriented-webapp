@@ -50,8 +50,8 @@
 ##
 
 <div style="display: flex; justify-content: center; gap: 20px;">
-    <img src="./assets/user.png" alt="spring security" width="250">
-    <img src="./assets/userdetails.png" alt="spring security" width="250">
+    <img src="./assets/user.png" alt="spring security" width="450">
+    <img src="./assets/userdetails.png" alt="spring security" width="450">
 </div>
 
 > ### User Details
@@ -71,8 +71,10 @@ public UserDetailsService userDetailsService(DataSource dataSource) {
     JdbcUserDetailsManager manager = new JdbcUserDetailsManager();
     manager.setDataSource(dataSource);
     // Optional: Customize SQL queries if using a non-default schema
-    manager.setUsersByUsernameQuery("SELECT username, password, enabled FROM my_users WHERE username = ?");
-    manager.setAuthoritiesByUsernameQuery("SELECT username, role FROM my_authorities WHERE username = ?");
+    manager.setUsersByUsernameQuery("SELECT username, password, enabled 
+        FROM my_users WHERE username = ?");
+    manager.setAuthoritiesByUsernameQuery("SELECT username, role 
+        FROM my_authorities WHERE username = ?");
     return manager;
 }
 
