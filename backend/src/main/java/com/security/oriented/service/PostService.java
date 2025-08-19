@@ -48,4 +48,22 @@ public class PostService {
             throw new RuntimeException("Failed to retrieve posts", e);
         }
     }
+
+    public PostResponse updatePost(Long id, PostRequest req, String username) {
+        try {
+            Post existingPost = postRepository.findById(id)
+                    .orElseThrow(() -> new RuntimeException("Post not found with ID: " + id));
+            if (!existingPost.getAuthor().equals(username)) {
+                throw new RuntimeException("You are not authorized to update this post");
+            }
+            Post updatedPost = PostMapper.toPost(req);
+            updatedPost.setAuthor(username);
+            Post savedPost = postRepository.save(updatedPost);
+            logger.info("Post updated successfully with ID: {}", savedPost.getId());
+            return PostMapper.fromPost(savedPost);
+        } catch (Exception e) {
+            logger.error("Error updating post: {}", e.getMessage());
+            throw new RuntimeException("Failed to update post", e);
+        }
+    }
 }
