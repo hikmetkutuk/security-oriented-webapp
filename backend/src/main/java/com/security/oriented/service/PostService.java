@@ -1,5 +1,7 @@
 package com.security.oriented.service;
 
+import java.util.List;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -30,6 +32,20 @@ public class PostService {
         } catch (Exception e) {
             logger.error("Error creating post: {}", e.getMessage());
             throw new RuntimeException("Failed to create post", e);
+        }
+    }
+
+    public List<PostResponse> getAllPosts() {
+        try {
+            List<Post> posts = postRepository.findAll();
+            logger.info("Retrieved {} posts", posts.size());
+            return posts.stream()
+                    .map(PostMapper::fromPost)
+                    .toList();
+
+        } catch (Exception e) {
+            logger.error("Error retrieving posts: {}", e.getMessage());
+            throw new RuntimeException("Failed to retrieve posts", e);
         }
     }
 }
