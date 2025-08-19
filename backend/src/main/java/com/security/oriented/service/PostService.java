@@ -66,4 +66,19 @@ public class PostService {
             throw new RuntimeException("Failed to update post", e);
         }
     }
+
+    public void deletePost(Long id, String username) {
+        try {
+            Post existingPost = postRepository.findById(id)
+                    .orElseThrow(() -> new RuntimeException("Post not found with ID: " + id));
+            if (!existingPost.getAuthor().equals(username)) {
+                throw new RuntimeException("You are not authorized to delete this post");
+            }
+            postRepository.delete(existingPost);
+            logger.info("Post deleted successfully with ID: {}", id);
+        } catch (Exception e) {
+            logger.error("Error deleting post: {}", e.getMessage());
+            throw new RuntimeException("Failed to delete post", e);
+        }
+    }
 }

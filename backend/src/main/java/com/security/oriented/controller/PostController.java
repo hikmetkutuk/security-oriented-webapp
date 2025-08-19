@@ -12,6 +12,7 @@ import java.util.List;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -43,5 +44,12 @@ public class PostController {
             @RequestBody PostRequest postRequest,
             @AuthenticationPrincipal UserDetails userDetails) {
         return ResponseEntity.ok(postService.updatePost(id, postRequest, userDetails.getUsername()));
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deletePost(@PathVariable Long id,
+            @AuthenticationPrincipal UserDetails userDetails) {
+        postService.deletePost(id, userDetails.getUsername());
+        return ResponseEntity.noContent().build();
     }
 }
