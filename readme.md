@@ -50,8 +50,8 @@
 ##
 
 <div style="display: flex; justify-content: center; gap: 20px;">
-    <img src="./assets/user.png" alt="spring security" width="450">
-    <img src="./assets/userdetails.png" alt="spring security" width="450">
+    <img src="./assets/user.png" alt="spring security" width="350">
+    <img src="./assets/userdetails.png" alt="spring security" width="350">
 </div>
 
 > ### User Details
