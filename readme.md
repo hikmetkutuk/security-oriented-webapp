@@ -49,19 +49,65 @@
 
 ##
 
-<p align="center">
-    <img src="./assets/user.png" alt="spring boot" width="300">  
-</p>
-
-<br />
-
-<p align="center">
-    <img src="./assets/userdetails.png" alt="spring boot" width="300">  
-</p>
+<div style="display: flex; justify-content: center; gap: 20px;">
+    <img src="./assets/user.png" alt="spring security" width="250">
+    <img src="./assets/userdetails.png" alt="spring security" width="250">
+</div>
 
 > ### User Details
-> The **UserDetails** interface is a core component in spring security that represents a user in the app.
-> It provides necessary information about the user, such as username, password, and authorities(roles)
+> The **UserDetails** interface in Spring Security represents a user's core information within the application. It defines methods to retrieve essential details such as the _username, password, authorities (roles or permissions), and account status (e.g., enabled, expired, or locked)_.
 > ### User
-> **User** is a concrete impllementation of the UserDetails interface provided by spring security.
-> It is often used to create a **UserDetails** object with predefined username, password and authorities.
+> The **User** class is a concrete implementation of the **UserDetails** interface provided by Spring Security. It offers a convenient way to create a **UserDetails** object with a predefined _username, password, and authorities_, typically used for simple in-memory authentication or testing purposes.
+> ### UserDetailsService
+> The **UserDetailsService** interface is responsible for loading user-specific data in Spring Security. It defines a single method, `loadUserByUsername(String username)`, which retrieves a user by their username and returns a **UserDetails** object, typically from a data source like a database or in-memory store.
+> ### UserDetailsManager
+> The **UserDetailsManager** interface extends **UserDetailsService** and adds methods for managing user accounts in Spring Security. It provides functionality to create, update, and delete users, as well as change passwords and check for user existence, making it suitable for applications requiring user management capabilities.
+> ### JdbcUserDetailsManager
+> The **JdbcUserDetailsManager** is a concrete implementation of the **UserDetailsManager** interface in Spring Security. It extends **JdbcDaoSupport** and provides user management functionality by interacting with a relational database using JDBC. It handles operations such as creating, updating, deleting users, changing passwords, and checking user existence, while also supporting the retrieval of user details as defined by the **UserDetailsService** interface.
+
+```
+@Bean
+public UserDetailsService userDetailsService(DataSource dataSource) {
+    JdbcUserDetailsManager manager = new JdbcUserDetailsManager();
+    manager.setDataSource(dataSource);
+    // Optional: Customize SQL queries if using a non-default schema
+    manager.setUsersByUsernameQuery("SELECT username, password, enabled FROM my_users WHERE username = ?");
+    manager.setAuthoritiesByUsernameQuery("SELECT username, role FROM my_authorities WHERE username = ?");
+    return manager;
+}
+
+@Bean
+public PasswordEncoder passwordEncoder() {
+    return new BCryptPasswordEncoder();
+}
+```
+
+> ### InMemoryUserDetailsManager
+> The **InMemoryUserDetailsManager** is a class in Spring Security that provides a simple, in-memory implementation of the **UserDetailsManager** interface. It is used for managing *user details (like usernames, passwords, and authorities/roles)* during authentication, primarily for testing or small-scale applications where a database or external user store is not required.
+
+```
+@Configuration
+public class SecurityConfig {
+
+    @Bean
+    public UserDetailsService userDetailsService() {
+        InMemoryUserDetailsManager manager = new InMemoryUserDetailsManager();
+        
+        manager.createUser(
+            User.withUsername("user")
+                .password("{noop}password") // {noop} indicates no password encoding
+                .roles("USER")
+                .build()
+        );
+        
+        manager.createUser(
+            User.withUsername("admin")
+                .password("{noop}admin123")
+                .roles("ADMIN")
+                .build()
+        );
+        
+        return manager;
+    }
+}
+```
