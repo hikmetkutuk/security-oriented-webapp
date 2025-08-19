@@ -34,3 +34,15 @@
 - Pre-Processing and Post-Processing
 - Req and Res Manipulation
 - Separation of Concerns
+
+##
+
+> **Auth Providers** in spring security are components handle the actual verification of credentials provided by a user during the login process.
+> - DaoAuthenticationProvider
+> - InMemoryAuthenticationProvider
+> - LdapAuthenticationProvider
+> - ActiveDirectoryLdapAuthenticationProvider
+> - PreAuthenticatedAuthenticationProvider
+> - OAuth2AuthenticationProvider
+
+> **In-Memory Auth** is storing and managing user credentials directly within the app's memory
