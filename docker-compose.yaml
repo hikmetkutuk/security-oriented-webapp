@@ -1,0 +1,33 @@
+services:
+
+  db:
+    container_name: sec-orient-db
+    image: postgres:17.2
+    environment:
+      POSTGRES_USER: secorient
+      POSTGRES_PASSWORD: secorient
+      POSTGRES_DB: secorient
+      PGDATA: /data/postgres
+    volumes:
+      - ./data/db/secorient:/data/postgres
+    ports:
+      - "5441:5432"
+    restart: unless-stopped
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U secorient -d secorient" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+  
+  pgadmin:
+    container_name: sec-orient-pgadmin
+    image: dpage/pgadmin4:8.14.0
+    environment:
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL:-pgadmin4@pgadmin.org}
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD:-admin}
+      PGADMIN_CONFIG_SERVER_MODE: 'False'
+    volumes:
+      - ./data/pgadmin/secorient:/var/lib/pgadmin
+    ports:
+      - "5050:80"
+    restart: unless-stopped

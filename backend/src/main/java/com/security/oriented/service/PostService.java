@@ -56,11 +56,12 @@ public class PostService {
             if (!existingPost.getAuthor().equals(username)) {
                 throw new RuntimeException("You are not authorized to update this post");
             }
-            Post updatedPost = PostMapper.toPost(req);
-            updatedPost.setAuthor(username);
-            Post savedPost = postRepository.save(updatedPost);
-            logger.info("Post updated successfully with ID: {}", savedPost.getId());
-            return PostMapper.fromPost(savedPost);
+            existingPost.setAuthor(username);
+            existingPost.setTitle(req.title());
+            existingPost.setContent(req.content());
+            postRepository.save(existingPost);
+            logger.info("Post updated successfully with ID: {}", existingPost.getId());
+            return PostMapper.fromPost(existingPost);
         } catch (Exception e) {
             logger.error("Error updating post: {}", e.getMessage());
             throw new RuntimeException("Failed to update post", e);

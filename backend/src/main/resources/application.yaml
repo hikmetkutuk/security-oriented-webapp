@@ -1,3 +1,20 @@
 spring:
     application:
         name: security-oriented-webapp
+    jpa:
+        properties:
+            hibernate:
+                dialect: org.hibernate.dialect.PostgreSQLDialect
+                format_sql: 'true'
+        show-sql: 'true'
+        hibernate:
+            ddl-auto: update
+    datasource:
+        username: secorient
+        url: jdbc:postgresql://localhost:5441/secorient
+        password: secorient
+
+logging:
+    level:
+        org.springframework: INFO
+        com.security.oriented: DEBUG
