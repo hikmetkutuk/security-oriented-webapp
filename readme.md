@@ -114,3 +114,10 @@ public class SecurityConfig {
     }
 }
 ```
+
+> ### Role Based Auth
+> **Role-based auth** is a method of restricting access to resources based on the roles assigned to users.
+
+<p align="center">
+    <img src="./assets/authority.png" alt="spring boot">  
+</p>
