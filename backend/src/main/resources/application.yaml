@@ -13,6 +13,10 @@ spring:
         username: secorient
         url: jdbc:postgresql://localhost:5441/secorient
         password: secorient
+    security:
+        user:
+            name: admin
+            password: password
 
 logging:
     level:

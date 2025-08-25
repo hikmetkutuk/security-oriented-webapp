@@ -121,3 +121,18 @@ public class SecurityConfig {
 <p align="center">
     <img src="./assets/authority.png" alt="spring boot">  
 </p>
+
+> Spring security provides **annotations** to secure methods in services or controllers.
+> ``` @PreAuthorize, @Secured, @RolesAllowed, @PostAuthorize, @PreFilter and @PostFilter ```
+>
+> **Method-level security** allows you to apply authorization checks directly at the method level (on service methods or controller methods).This way, even if someone bypasses URL-based security, the method itself enforces access rules.
+>
+> ```@PreAuthorize``` Runs before the method executes.
+>
+> ```@Secured``` A simpler alternative, supports only roles
+>
+> ```@RolesAllowed``` Specifies rolesallowed to invoke the method
+>
+>```@PostAuthorize``` Runs after the method executes (useful when you need to check the returned object).
+>
+>```@PreFilter and @PostFilter``` Annotations filter collactions or arrays passed as method arguments or returned by the method.
