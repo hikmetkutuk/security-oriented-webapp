@@ -26,7 +26,9 @@ import org.springframework.boot.CommandLineRunner;
 public class SecurityConfig {
     @Bean
     SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http.authorizeHttpRequests((req) -> req.anyRequest().authenticated());
+        http.authorizeHttpRequests((req) ->
+                req.requestMatchers("/api/v1/admin/**").hasRole("ADMIN")
+                        .anyRequest().authenticated());
         http.csrf(AbstractHttpConfigurer::disable);
         http.httpBasic(withDefaults());
         return http.build();

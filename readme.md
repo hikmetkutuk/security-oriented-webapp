@@ -131,8 +131,31 @@ public class SecurityConfig {
 >
 > ```@Secured``` A simpler alternative, supports only roles
 >
-> ```@RolesAllowed``` Specifies rolesallowed to invoke the method
+> ```@RolesAllowed``` Specifies roles allowed to invoke the method
 >
 >```@PostAuthorize``` Runs after the method executes (useful when you need to check the returned object).
 >
->```@PreFilter and @PostFilter``` Annotations filter collactions or arrays passed as method arguments or returned by the method.
+>```@PreFilter and @PostFilter``` Annotations filter collections or arrays passed as method arguments or returned by the method.
+
+> Spring security allows to configure URL-based restrictions in security config.
+> ```http.authorizeHttpRequests()```
+> - ```.requestMatchers("/admin/**").hasRole("ADMIN")``` Only users with the "ADMIN" role can access URLs starting with "/admin/".
+> - ```.requestMatchers("/user/**").hasAnyRole("USER", "ADMIN")``` Users with either the "USER" or "ADMIN" role can access URLs starting with "/user/".
+> - ```.requestMatchers("/public/**").permitAll()``` All users, regardless of authentication status, can access URLs starting with "/public/".
+> - ```.anyRequest().authenticated()``` All other requests require authentication.
+
+### Comparison of Method Level Security vs RequestMatchers Approach
+| Category                | Method Level Security                                                                 | RequestMatchers Approach                                      |
+|--------------------------|---------------------------------------------------------------------------------------|---------------------------------------------------------------|
+| **Definition**           | Uses annotations to secure individual methods.                                        | Configures security based on URL patterns in HTTP configuration. |
+| **Key Annotations/Methods** | `@PreAuthorize`, `@PostAuthorize`, `@Secured`, `@RolesAllowed`                      | `requestMatchers`                                             |
+| **Granularity**          | Fine-grained control over individual methods.                                         | Coarse-grained control based on URL patterns.                 |
+| **Configuration Location** | Annotations on methods or classes in service or controller layers.                   | Centralized in security configuration file.                   |
+| **Flexibility**          | Highly flexible with complex expressions using SpEL.                                  | Clear and straightforward URL-based rules.                    |
+| **Impact on Business Logic** | Directly couples security with business logic.                                     | Keeps security rules separate from business logic.            |
+| **Management Complexity** | Can be verbose; requires annotations on each method.                                 | Easier to manage with all rules in one configuration file.     |
+| **Use Case Suitability** | Ideal for detailed control and complex conditions.                                    | Ideal for simple and maintainable URL-based security.          |
+| **Examples**             | `@PreAuthorize("hasRole('ROLE_ADMIN')")` <br> `@Secured("ROLE_ADMIN")`                | `.requestMatchers("/admin/**").hasRole("ADMIN")`              |
+| **Best Use Cases**        | - Securing service methods accessed by various controllers. <br> - Applying role-based access with additional conditions. | - Securing web applications with clear URL patterns for different roles. <br> - Enforcing access control on REST APIs based on URL structures. |
+| **Pros**                 | - Provides detailed access control. <br> - Can apply complex security logic. <br> - Ensures security at the business logic layer. | - Centralized management. <br> - Clear URL-based rules. <br> - Less intrusive to business logic. |
+| **Cons**                 | - Requires annotations on each secured method. <br> - Tightly coupled with business logic. | - Less granularity compared to method-level security. <br> - Potential for overlapping or conflicting rules with method-level security. |
