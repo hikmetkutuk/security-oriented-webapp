@@ -1,5 +1,6 @@
 package com.security.oriented.model;
 
+import java.io.Serial;
 import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
@@ -14,6 +15,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 @Data
 @NoArgsConstructor
 public class UserDetail implements UserDetails {
+    @Serial
     private static final long serialVersionUID = 1L;
 
     private Long id;

@@ -5,6 +5,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.web.SecurityFilterChain;
 
 import com.security.oriented.model.AppRole;
@@ -21,59 +22,67 @@ import org.springframework.boot.CommandLineRunner;
 
 @Configuration
 @EnableWebSecurity
-@EnableMethodSecurity(prePostEnabled = true, securedEnabled = true, jsr250Enabled = true)
+@EnableMethodSecurity(securedEnabled = true, jsr250Enabled = true)
 public class SecurityConfig {
     @Bean
     SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.authorizeHttpRequests((req) -> req.anyRequest().authenticated());
-        http.csrf(csrf -> csrf.disable());
+        http.csrf(AbstractHttpConfigurer::disable);
         http.httpBasic(withDefaults());
         return http.build();
     }
 
     @Bean
-    public CommandLineRunner initData(RoleRepository roleRepository,
-            UserRepository userRepository) {
+    public CommandLineRunner initData(RoleRepository roleRepository, UserRepository userRepository) {
         return args -> {
             Role userRole = roleRepository.findByRoleName(AppRole.ROLE_USER)
-                    .orElseThrow(() -> new RuntimeException("ROLE_USER not found in database"));
+                    .orElseThrow(() -> new IllegalStateException("ROLE_USER not found in database"));
 
             Role adminRole = roleRepository.findByRoleName(AppRole.ROLE_ADMIN)
-                    .orElseThrow(() -> new RuntimeException("ROLE_ADMIN not found in database"));
+                    .orElseThrow(() -> new IllegalStateException("ROLE_ADMIN not found in database"));
 
-            if (!userRepository.existsByUsername("user1")) {
-                User user1 = new User();
-                user1.setUsername("user1");
-                user1.setEmail("user1@example.com");
-                user1.setPassword("{noop}user1Pass");
-                user1.setAccountNonLocked(false);
-                user1.setAccountNonExpired(true);
-                user1.setCredentialsNonExpired(true);
-                user1.setEnabled(true);
-                user1.setCredentialsExpiryDate(LocalDate.now().plusYears(1));
-                user1.setAccountExpiryDate(LocalDate.now().plusYears(1));
-                user1.setTwoFactorEnabled(false);
-                user1.setSignUpMethod("email");
-                user1.setRole(userRole);
-                userRepository.save(user1);
-            }
+            createUserIfNotExists(
+                    userRepository,
+                    "user1",
+                    "user1@example.com",
+                    "{noop}user1Pass",
+                    false,
+                    userRole
+            );
 
-            if (!userRepository.existsByUsername("admin")) {
-                User admin = new User();
-                admin.setUsername("admin");
-                admin.setEmail("admin@example.com");
-                admin.setPassword("{noop}adminPass");
-                admin.setAccountNonLocked(true);
-                admin.setAccountNonExpired(true);
-                admin.setCredentialsNonExpired(true);
-                admin.setEnabled(true);
-                admin.setCredentialsExpiryDate(LocalDate.now().plusYears(1));
-                admin.setAccountExpiryDate(LocalDate.now().plusYears(1));
-                admin.setTwoFactorEnabled(false);
-                admin.setSignUpMethod("email");
-                admin.setRole(adminRole);
-                userRepository.save(admin);
-            }
+            createUserIfNotExists(
+                    userRepository,
+                    "admin",
+                    "admin@example.com",
+                    "{noop}adminPass",
+                    true,
+                    adminRole
+            );
         };
+    }
+
+    private void createUserIfNotExists(UserRepository userRepository,
+                                       String username,
+                                       String email,
+                                       String password,
+                                       boolean accountNonLocked,
+                                       Role role) {
+        if (!userRepository.existsByUsername(username)) {
+            User user = new User();
+            user.setUsername(username);
+            user.setEmail(email);
+            user.setPassword(password);
+            user.setAccountNonLocked(accountNonLocked);
+            user.setAccountNonExpired(true);
+            user.setCredentialsNonExpired(true);
+            user.setEnabled(true);
+            user.setCredentialsExpiryDate(LocalDate.now().plusYears(1));
+            user.setAccountExpiryDate(LocalDate.now().plusYears(1));
+            user.setTwoFactorEnabled(false);
+            user.setSignUpMethod("email");
+            user.setRole(role);
+
+            userRepository.save(user);
+        }
     }
 }
